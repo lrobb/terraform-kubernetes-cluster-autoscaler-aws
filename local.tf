@@ -1,7 +1,7 @@
 locals {
   kubernetes_resources_labels = merge({
     "cookielab.io/terraform-module" = "aws-kube-cluster-autoscaler",
-    k8s-addon = "cluster-autoscaler.addons.k8s.io",
+    k8s-addon                       = "cluster-autoscaler.addons.k8s.io",
   }, var.kubernetes_resources_labels)
 
   kubernetes_deployment_labels_selector = {
@@ -19,8 +19,9 @@ locals {
     "--cloud-provider=aws",
     "--skip-nodes-with-local-storage=${var.skip_nodes_with_local_storage ? "false" : "true"}",
     "--expander=${var.expander}",
-    "--node-group-auto-discovery=asg:tag=${join(",", var.asg_tags)}",
+    # "--node-group-auto-discovery=asg:tag=${join(",", var.asg_tags)}",
     "--balance-similar-node-groups",
     "--skip-nodes-with-system-pods=false",
+    "--aws-use-static-instance-list=true"
   ], var.additional_autoscaler_options)
 }

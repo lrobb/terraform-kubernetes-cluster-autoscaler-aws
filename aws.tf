@@ -1,8 +1,8 @@
 resource "aws_iam_policy" "cluster_autoscaler" {
   count = var.aws_create_iam_policy ? 1 : 0
 
-  name = var.aws_iam_policy_name
-  path = "/"
+  name        = var.aws_iam_policy_name
+  path        = "/"
   description = "Allows access to resources needed to run kubernetes cluster autoscaler."
 
   policy = <<EOF
@@ -12,11 +12,13 @@ resource "aws_iam_policy" "cluster_autoscaler" {
     {
       "Effect": "Allow",
       "Action": [
-        "autoscaling:DescribeAutoScalingGroups",
-        "autoscaling:DescribeAutoScalingInstances",
-        "autoscaling:DescribeTags",
-        "autoscaling:SetDesiredCapacity",
-        "autoscaling:TerminateInstanceInAutoScalingGroup"
+                "autoscaling:DescribeAutoScalingGroups",
+                "autoscaling:DescribeAutoScalingInstances",
+                "autoscaling:DescribeLaunchConfigurations",
+                "autoscaling:DescribeTags",
+                "autoscaling:SetDesiredCapacity",
+                "autoscaling:TerminateInstanceInAutoScalingGroup",
+                "ec2:DescribeLaunchTemplateVersions"
       ],
       "Resource": "*"
     }
@@ -27,8 +29,8 @@ EOF
 }
 
 resource "aws_iam_role_policy_attachment" "cluster_autoscaler" {
-  count = var.aws_create_iam_policy && var.aws_iam_role_for_policy != null ? 1 : 0
+  # count = var.aws_create_iam_policy && var.aws_iam_role_for_policy != null ? 1 : 0
 
-  role = var.aws_iam_role_for_policy
+  role       = var.aws_iam_role_for_policy
   policy_arn = aws_iam_policy.cluster_autoscaler.0.arn
 }
